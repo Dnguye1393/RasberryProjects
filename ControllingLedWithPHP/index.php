@@ -1,33 +1,37 @@
-<?php
-	# phpinfo();
-  $status = array ( 0 );
-  //set pins mode to output
+<!DOCTYPE html>
+<!--TheFreeElectron 2015, http://www.instructables.com/member/TheFreeElectron/ -->
 
-  system ( "gpio mode " . 29 . " out" );
-  system ( "gpio mode " . 26 . " out" );
-  system ( "gpio mode " . 24 . " out" );
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Raspberry Pi Gpio</title>
+    </head>
 
-  //turns on the LEDs
-  system ( "gpio write " . 29 . " 1" );
-  sleep ( 1 );
-  system ( "gpio write " . 26 . " 1" );
-  sleep ( 1 );
-  system ( "gpio write " . 24 . " 1" );
+    <body style="background-color: black;">
+    <!-- On/Off button's picture -->
+	<?php
+	$val_array = array(0,0,0,0,0,0,0,0);
+	//this php script generate the first page in function of the file
+	for ( $i= 0; $i<8; $i++) {
+		//set the pin's mode to output and read them
+		system("gpio mode ".$i." out");
+		exec ("gpio read ".$i, $val_array[$i], $return );
+	}
+	//for loop to read the value
+	$i =0;
+	for ($i = 0; $i < 8; $i++) {
+		//if off
+		if ($val_array[$i][0] == 0 ) {
+			echo ("<img id='button_".$i."' src='data/img/red/red_".$i.".jpg' onclick='change_pin (".$i.");'/>");
+		}
+		//if on
+		if ($val_array[$i][0] == 1 ) {
+			echo ("<img id='button_".$i."' src='data/img/green/green_".$i.".jpg' onclick='change_pin (".$i.");'/>");
+		}
+	}
+	?>
 
-
-  //reads and prints the LEDs status
-  exec ( "gpio read " . 29 . $status );
-  exec ( "gpio read " . 26 . $status );
-  exec ( "gpio read " . 24 . $status );
-  echo ( $status[0] );
-
-  //waits 2 seconds
-  sleep ( 2 );
-  //turns off the LEDs
-  system ( "gpio write " . 24 . " 0" );
-  sleep ( 1 );
-  system ( "gpio write " . 26 . " 0" );
-  sleep ( 1 );
-  system ( "gpio write " . 29 . " 0" );
-
-?>
+	<!-- javascript -->
+	<script src="script.js"></script>
+    </body>
+</html>
