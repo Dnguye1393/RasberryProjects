@@ -6,23 +6,23 @@ sense = SenseHat()
 @app.route('/')
 def index():
 
-    return render_template('index.html')
+    return render_template('index.html', title="Home Page")
 
-@app.route('/my-link/')
+@app.route('/helloWorld')
 def my_link():
 
     sense.show_message("hello world!")
     print ('I got Clicked')
-    return 'Click.'
+    return render_template('helloWorld.html' , title="Hello World")
 
-@app.route('/get-temp/')
+@app.route('/temperature')
 def get_temp():
     temp = sense.get_temperature()
     print("Temperature: %s C",  temp)
     f = open('test.txt','w')
     f.write("Temperature: " +  format(temp) + " C")
     f.close()
-    return "Tempterature "
+    return render_template('temperature.html', title="Temperature")
 
 
 def format(value):
