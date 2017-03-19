@@ -1,8 +1,10 @@
 from sense_hat import SenseHat
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, request
+import requests
 app = Flask(__name__)
 sense = SenseHat()
 
+languages =[{'name':'JavaScript'}, {'name':'Python'}, {'name':'Java'}]
 @app.route('/')
 def index():
 
@@ -24,7 +26,14 @@ def get_temp():
     f.close()
     return render_template('temperature.html', title="Temperature")
 
+@app.route('/restget' , methods=['GET'])
+def test():
+    return jsonify({'languages':languages})
 
+@app.route('/restget/<string:name>', methods=['GET'])
+def returnOne(name):
+    langs = [language for language in languages if language['name']==name]
+    return jsonify({'language':langs[0]})
 def format(value):
     return "%.3f" % value
 
