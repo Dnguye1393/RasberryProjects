@@ -1,10 +1,13 @@
 from sense_hat import SenseHat
 from flask import Flask, render_template, jsonify, request
+
 import requests
 app = Flask(__name__)
+
 sense = SenseHat()
 
 languages =[{'name':'JavaScript'}, {'name':'Python'}, {'name':'Java'}]
+
 @app.route('/')
 def index():
 
@@ -30,12 +33,31 @@ def get_temp():
 def test():
     return jsonify({'languages':languages})
 
+@app.route('/restget' , methods=['POST'])
+def addOne():
+    language ={'name': request.json['name']}
+    languages.append(language)
+    return jsonify({'languages':languages})
+
 @app.route('/restget/<string:name>', methods=['GET'])
 def returnOne(name):
     langs = [language for language in languages if language['name']==name]
     return jsonify({'language':langs[0]})
-def format(value):
-    return "%.3f" % value
+
+
+
+@app.route('/restget/<string:name>', methods=['PUT'])
+def editOne(name):
+    langs = [language for language in languages if language['name']==name]
+    langs[0]['name'] = request.json['name']
+    return jsonify({'language':langs[0]})
+
+@app.route('/restget/<string:name>', methods=['DELETE'])
+def deleteOne(name):
+    langs = [language for language in languages if language['name']==name]
+    languages.remove(langs[0])
+    return jsonify({'language':languages})
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
