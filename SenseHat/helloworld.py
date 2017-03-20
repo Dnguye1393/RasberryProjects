@@ -45,14 +45,21 @@ def test():
 @app.route('/restget' , methods=['POST'])
 def addOne():
     val = request.json['name']
-    language ={'name': val}
-    languages.append(language)
-    sql = 'INSERT INTO languages(name) VALUES("%s")' % (val)
-    try:
-        cursor.execute(sql)
-        cnx.commit()
-    except Error as error:
-            print(error)
+    alreadyExist = False
+    for language in languages :
+        if ( language['name']==val ) :
+            alreadyExist = True
+    if(not alreadyExist) :
+        language ={'name': val}
+        languages.append(language)
+        sql = 'INSERT INTO languages(name) VALUES("%s")' % (val)
+        try:
+            cursor.execute(sql)
+            cnx.commit()
+        except Error as error:
+                print(error)
+    else :
+        print("This value, ", val, ", already exists" )
     return jsonify({'languages':languages})
 
 @app.route('/restget/<string:name>', methods=['GET'])
