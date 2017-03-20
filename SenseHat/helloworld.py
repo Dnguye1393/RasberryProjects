@@ -1,12 +1,21 @@
 from sense_hat import SenseHat
 from flask import Flask, render_template, jsonify, request
-
+import mysql.connector
+from mysql.connector import MySQLConnection, Error
 import requests
 app = Flask(__name__)
 
 sense = SenseHat()
-
-languages =[{'name':'JavaScript'}, {'name':'Python'}, {'name':'Java'}]
+languages = []
+cnx = mysql.connector.connect(user = 'root', password='Classof2011' ,
+                                host='localhost', database='senseHat')
+cursor = cnx.cursor()
+cursor.execute("SELECT name from languages")
+data = cursor.fetchall()
+for row in data :
+    language ={'name': row[0]}
+    languages.append(language)
+    print ('Adding to Languages')
 
 @app.route('/')
 def index():
@@ -35,8 +44,15 @@ def test():
 
 @app.route('/restget' , methods=['POST'])
 def addOne():
-    language ={'name': request.json['name']}
+    val = request.json['name']
+    language ={'name': val}
     languages.append(language)
+    sql = 'INSERT INTO languages(name) VALUES("%s")' % (val)
+    try:
+        cursor.execute(sql)
+        cnx.commit()
+    except Error as error:
+            print(error)
     return jsonify({'languages':languages})
 
 @app.route('/restget/<string:name>', methods=['GET'])
