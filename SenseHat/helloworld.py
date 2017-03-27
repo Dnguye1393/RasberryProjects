@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 sense = SenseHat()
 languages = []
-cnx = mysql.connector.connect(user = 'root', password='Classof2011' ,
+cnx = mysql.connector.connect(user = 'davidn', password='raspberry' ,
                                 host='localhost', database='senseHat')
 cursor = cnx.cursor()
 cursor.execute("SELECT name from languages")
@@ -78,7 +78,21 @@ def editOne(name):
 @app.route('/restget/<string:name>', methods=['DELETE'])
 def deleteOne(name):
     langs = [language for language in languages if language['name']==name]
-    languages.remove(langs[0])
+    alreadyExist = False
+    val = langs[0]
+    for language in languages :
+        if ( language['name']==val ) :
+            alreadyExist = True
+    if(alreadyExist) :
+        languages.remove(langs[0])
+        sql ='DELETE FROM languages WHERE name = %s' % (val)
+        try:
+            cursor.execute(sql)
+            cnx.commit()
+        except Error as error:
+                print(error)
+    else :
+        print("This value, ", val, ", does not exists" )
     return jsonify({'language':languages})
 
 
