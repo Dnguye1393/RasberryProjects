@@ -1,7 +1,7 @@
 from sense_hat import SenseHat
 from flask import Flask, render_template, jsonify, request
 import mysql.connector
-from mysql.connector import MySQLConnection, Error
+#from mysql.connector import MySQLConnection, Error
 import requests
 app = Flask(__name__)
 
