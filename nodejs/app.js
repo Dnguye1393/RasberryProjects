@@ -1,13 +1,10 @@
-var m2 = require('./app2');
-var mysql = require('mysql');
-var connection = mysql.createConncetion({
-  host: 'localhost',
-  user: 'davidn',
-  password: 'raspberry',
-  database: 'light'
-});
-connection.connect(function(err) {
-  // connected! (unless `err` is set)
-});
-var _ = require('underscore');
-m2();
+var wpi = require("wiring-pi");
+wpi.setup('wpi');
+var pin = 0 ;
+var value = 1;
+wpi.pinMode(pin, wpi.OUTPUT);
+setInterval(function() {
+  wpi.digitalWrite(pin, value);
+  //console.log("Testing");
+  value = +!value;
+}, 500);
